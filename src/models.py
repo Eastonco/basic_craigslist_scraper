@@ -1,10 +1,7 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-from typing import Optional
 import os
 
-# SQLAlchemy imports
-from sqlalchemy import Column, Float, String, DateTime, Integer, select, create_engine
+from sqlalchemy import String, Integer, create_engine
 from sqlalchemy.orm import Session, Mapped, mapped_column, DeclarativeBase, MappedAsDataclass
 
 
@@ -27,10 +24,7 @@ class Config:
     discord_webhook_url: str
     send_discord_alerts: bool
 
-# format is postgresql://username:password@host:port/database
 
-
-# format is postgresql://username:password@host:port/database
 def get_engine(
     user: str = 'postgres',
     password: str = 'password',
@@ -39,18 +33,6 @@ def get_engine(
     database: str = 'craigslist',
     echo: bool = False,
 ):
-    """
-    Create a SQLAlchemy engine. All parameters can be overridden via environment variables:
-      - DB_USER
-      - DB_PASSWORD
-      - DB_HOST
-      - DB_PORT
-      - DB_NAME
-
-    Function arguments are used as defaults (and may come from config.json),
-    but any present environment variable will take precedence. This makes the
-    app container-friendly while preserving existing config behavior.
-    """
     user = os.getenv('DB_USER', user)
     password = os.getenv('DB_PASSWORD', password)
     host = os.getenv('DB_HOST', host)
@@ -76,7 +58,6 @@ def get_db(table_name: str):
         time_posted: Mapped[str] = mapped_column(String)
         location: Mapped[str] = mapped_column(String)
         time_scraped: Mapped[str] = mapped_column(String)
-
 
         def __repr__(self):
             return f'link: {self.link}\ntitle: {self.title}\nid: {self.cl_id}\ntime_posted: {self.time_posted}\nlocation: {self.location}\ntime_scraped: {self.time_scraped}'

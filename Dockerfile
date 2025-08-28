@@ -27,7 +27,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the source
 COPY . .
 
+# Ensure Python can find the src/ layout
+ENV PYTHONPATH=/app/src
+
 # Note: DB connection settings should be provided at runtime (e.g., via docker-compose)
 
-# Default command runs the scraper; docker-compose can override to run the API server.
-CMD ["python", "main.py", "--config", "./config/config.json"]
+# Default command runs the scraper from src; docker-compose can override to run the API server.
+CMD ["python", "-m", "app", "--config", "./config/config.json"]

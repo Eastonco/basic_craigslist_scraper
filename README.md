@@ -38,7 +38,7 @@ there's an example config file stubbed out in `./config/configExample.json`. Mos
 
 ### To run:
 ```sh
-python main.py -c ./path/to/your/config
+python -m app -c ./path/to/your/config
 ```
 when the `-c` config path is not passed it's assumed to be `./config/config.json`
 
@@ -138,7 +138,7 @@ docker compose up --build -d
 
 This will start:
 - `db`: Postgres 14
-- `scraper`: runs `python main.py --config ./config/config.json`
+- `scraper`: runs `python -m app --config ./config/config.json`
 - `server`: runs `uvicorn server:app --host 0.0.0.0 --port 8000` exposed on port 8000
 
 3) Logs:
@@ -176,3 +176,5 @@ Then configure the Twilio webhook to the generated URL.
 ### Notes
 - The Docker image includes Firefox ESR and geckodriver for Selenium in headless mode.
 - The default image runs Python 3.10 to match the project’s requirements.
+- The image sets `PYTHONPATH=/app/src` so the `src/` layout works out of the box.
+- For local runs, either run from the `src/` folder or set `PYTHONPATH=./src` in your environment.
