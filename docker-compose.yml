@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: clscraper-db
+    environment:
+      POSTGRES_DB: craigslist
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d craigslist"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  scraper:
+    build: .
+    container_name: clscraper-worker
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # DB connection for SQLAlchemy
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: craigslist
+      # Optional toggles can be controlled via config.json; secrets via env if desired
+      # TWILIO_ACCOUNT_SID: ""
+      # TWILIO_AUTH_TOKEN: ""
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+
+  server:
+    build: .
+    container_name: clscraper-api
+    command: ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: craigslist
+    volumes:
+      - ./config:/app/config:rw
+    restart: unless-stopped
+
+volumes:
+  db-data:

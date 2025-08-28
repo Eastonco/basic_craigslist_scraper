@@ -114,3 +114,65 @@ I had some trouble sharing the shortcut so you'll need to remake it yourself bas
 - [x] allow human readable csv files to be selected instead of database (maybe command line argument?)
 - [x] change the scrape function to account for multiple urls in the craigslist url array in the config.json
 - [x] save the time that the post was posted + include that in the text. 
+
+## Docker (run anywhere)
+
+This project now includes a Dockerfile and docker-compose to run the scraper and optional FastAPI control server without installing Firefox locally.
+
+### Prereqs
+- Docker Desktop or Docker Engine + Docker Compose
+- A Postgres database (compose will start one for you)
+- A config file at `./config/config.json` (use `config/configExample.json` as a template)
+
+### Quick start with Compose
+
+1) Create your config:
+	 - Copy `config/configExample.json` to `config/config.json` and fill in values.
+	 - If you want to use the text-command server, also create `config/serverConfig.json` based on `config/serverConfigExample.json`.
+
+2) Start everything:
+
+```sh
+docker compose up --build -d
+```
+
+This will start:
+- `db`: Postgres 14
+- `scraper`: runs `python main.py --config ./config/config.json`
+- `server`: runs `uvicorn server:app --host 0.0.0.0 --port 8000` exposed on port 8000
+
+3) Logs:
+
+```sh
+docker compose logs -f scraper
+```
+
+### Configuration and environment
+
+- The containerized app reads DB connection from env vars (overrides config values):
+	- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+	- Compose sets these to connect to the bundled Postgres service.
+- Your local `./config` folder is mounted into the containers. Keep secrets in `config.json` locally; it’s ignored via `.dockerignore` so you don’t accidentally build them into the image.
+
+### Running only the scraper
+```sh
+docker compose up --build -d db scraper
+```
+
+### Running only the API (control server)
+```sh
+docker compose up --build -d db server
+```
+
+### Twilio + ngrok for callbacks
+If you use the text-command server, you’ll need a public URL. You can run ngrok on your host and point it to the server container’s published port:
+
+```sh
+ngrok http 8000
+```
+
+Then configure the Twilio webhook to the generated URL.
+
+### Notes
+- The Docker image includes Firefox ESR and geckodriver for Selenium in headless mode.
+- The default image runs Python 3.10 to match the project’s requirements.

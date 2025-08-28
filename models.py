@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from typing import Optional
+import os
 
 # SQLAlchemy imports
 from sqlalchemy import Column, Float, String, DateTime, Integer, select, create_engine
@@ -22,6 +23,7 @@ class Config:
     db_user: str
     db_password: str
     filters: list[str]
+    combine_texts: bool
     discord_webhook_url: str
     send_discord_alerts: bool
 
@@ -29,7 +31,32 @@ class Config:
 
 
 # format is postgresql://username:password@host:port/database
-def get_engine(user: str = 'postgres', password: str = 'password', host: str = 'localhost', port: str = '5432', database: str = 'craigslist', echo: bool = False):
+def get_engine(
+    user: str = 'postgres',
+    password: str = 'password',
+    host: str = 'localhost',
+    port: str = '5432',
+    database: str = 'craigslist',
+    echo: bool = False,
+):
+    """
+    Create a SQLAlchemy engine. All parameters can be overridden via environment variables:
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+
+    Function arguments are used as defaults (and may come from config.json),
+    but any present environment variable will take precedence. This makes the
+    app container-friendly while preserving existing config behavior.
+    """
+    user = os.getenv('DB_USER', user)
+    password = os.getenv('DB_PASSWORD', password)
+    host = os.getenv('DB_HOST', host)
+    port = os.getenv('DB_PORT', port)
+    database = os.getenv('DB_NAME', database)
+
     SQLALCHEMY_DATABASE_URL = f'postgresql://{user}:{password}@{host}:{port}/{database}'
     engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=echo)
     return engine

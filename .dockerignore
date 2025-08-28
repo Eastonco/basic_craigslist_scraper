@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.env
+.venv/
+venv/
+.git/
+.gitignore
+node_modules/
+
+# Optional: ignore local configs by default; compose will mount ./config at runtime
+config/*.json
+!config/configExample.json
+!config/serverConfigExample.json
