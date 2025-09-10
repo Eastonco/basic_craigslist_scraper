@@ -13,6 +13,8 @@ RUN apt-get update \
          ca-certificates curl wget \
          firefox-esr \
          libasound2 \
+     && apt-get update && apt-get install -y ca-certificates \
+     && update-ca-certificates \
      && rm -rf /var/lib/apt/lists/*
 
 # Optional: verify firefox install
