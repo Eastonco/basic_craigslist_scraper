@@ -24,6 +24,7 @@ outcome==1.2.0
 packaging==23.1
 psycopg2-binary==2.9.6
 pydantic==1.10.9
+pydantic[email]==1.10.9
 PyJWT==2.7.0
 PySocks==1.7.1
 python-dotenv==1.0.0
@@ -48,3 +49,7 @@ watchfiles==0.19.0
 websockets==11.0.3
 wsproto==1.2.0
 yarl==1.9.2
+
+# Development dependencies
+pytest==7.4.0
+pytest-mock==3.11.1
