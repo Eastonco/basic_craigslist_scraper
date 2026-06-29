@@ -4,6 +4,12 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install --no-audit --no-fund
 
+# Dev stage: source copied here on build, then kept live via docker watch sync.
+FROM deps AS dev
+COPY . .
+ENV PORT=8000 HOSTNAME=0.0.0.0
+CMD ["npm", "run", "dev"]
+
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

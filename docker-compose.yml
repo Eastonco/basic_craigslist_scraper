@@ -33,7 +33,9 @@ services:
   web:
     # Next.js app (replaces the old FastAPI/uvicorn server). Talks to the db
     # service directly; the Postgres schema is the only contract with the scraper.
-    build: ./web
+    build:
+      context: ./web
+      target: dev
     env_file: .env
     environment:
       DB_HOST: db
@@ -46,6 +48,27 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    develop:
+      watch:
+        - path: ./web/app
+          action: sync
+          target: /app/app
+        - path: ./web/db
+          action: sync
+          target: /app/db
+        - path: ./web/lib
+          action: sync
+          target: /app/lib
+        - path: ./web/middleware.ts
+          action: sync+restart
+          target: /app/middleware.ts
+        - path: ./web/next.config.ts
+          action: sync+restart
+          target: /app/next.config.ts
+        - path: ./web/package.json
+          action: rebuild
+        - path: ./web/package-lock.json
+          action: rebuild
 
   scraper:
     build: .

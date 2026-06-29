@@ -9,6 +9,7 @@
     "db:pull": "drizzle-kit pull"
   },
   "dependencies": {
+    "@radix-ui/themes": "^3.3.0",
     "drizzle-orm": "^0.36.4",
     "next": "^15.1.3",
     "postgres": "^3.4.5",
