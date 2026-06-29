@@ -31,14 +31,16 @@ services:
       retries: 12
 
   web:
-    build: .
-    command: uvicorn server:app --host 0.0.0.0 --port 8000
+    # Next.js app (replaces the old FastAPI/uvicorn server). Talks to the db
+    # service directly; the Postgres schema is the only contract with the scraper.
+    build: ./web
     env_file: .env
     environment:
       DB_HOST: db
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: craigslist
+      DB_PORT: 5432
     ports:
       - "8000:8000"
     depends_on:
@@ -47,7 +49,7 @@ services:
 
   scraper:
     build: .
-    command: python main.py
+    command: python -m backend.main
     env_file: .env
     environment:
       DB_HOST: db

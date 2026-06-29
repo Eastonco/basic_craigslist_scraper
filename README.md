@@ -10,12 +10,16 @@ Config lives in **Postgres**, not JSON files: the web form writes it, the scrape
 loop reads everyone's active searches each cycle.
 
 ```
-cloudflared (cl.yourdomain.com) ──► FastAPI web app (server.py) ─┐
+cloudflared (cl.yourdomain.com) ──► Next.js web app (./web) ─────┐
                                                                  ├─► Postgres
         scraper loop (main.py) ──────────────────────────────────┘   users / searches
               │                                                       listings / reactions
               └─► Claude Haiku (classify.py) ──► ntfy / SMS (notify.py)
 ```
+
+The web app and the scraper are independent services that share nothing but the
+Postgres schema. The Next.js app reads/writes `users`/`searches` directly; the
+Python scraper owns the schema (creates the tables on first run).
 
 # Setup
 
@@ -77,7 +81,7 @@ Two processes run side by side:
 
 **1. The scraper loop**
 ```sh
-python main.py
+python -m backend.main
 ```
 Every ~minute it reads all active searches from Postgres, scrapes them, classifies
 new free items, and notifies the owner. The first time it sees a new search it
@@ -86,8 +90,13 @@ flooded — alerts start on the next cycle.
 
 **2. The web app** (so you + friends can self-serve)
 ```sh
-uvicorn server:app --host 127.0.0.1 --port 8000
+cd web
+npm install
+npm run db:pull   # generate db/schema.ts from the live Postgres (one-time / after schema changes)
+npm run dev       # or: npm run build && npm run start  (both serve on :8000)
 ```
+The web app is a Next.js project in `./web`. It talks to Postgres directly using
+the same `DB_*` env vars as the scraper.
 
 ## (Optional) Expose the web app with a Cloudflare Tunnel
 Gives you a stable public URL (e.g. `cl.yourdomain.com`) with no port-forwarding.
