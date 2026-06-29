@@ -1,0 +1,14 @@
+.git
+.gitignore
+.venv
+venv
+__pycache__
+*.pyc
+.env
+config/config.json
+config/serverconfig.json
+drivers
+geckodriver.log
+*.log
+ios-shortcut.jpg
+notes.md
