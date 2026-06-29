@@ -63,16 +63,40 @@ export default async function Admin() {
 
   return (
     <>
-      <h1>⚙️ Admin</h1>
-      <p>
+      <h1>Admin</h1>
+      <p className="status">
         <strong>Scraper:</strong> <HeartbeatBadge status={status} />
       </p>
-      <p>
-        <strong>Totals:</strong> {usersList.length} users · {searchesList.length} searches ·{" "}
-        {nListings} listings · <b>{wantN}</b> wanted · {skipN} skipped · {baseN} baselined
-      </p>
+
+      <div className="stats">
+        <div className="stat">
+          <div className="stat__num">{usersList.length}</div>
+          <div className="stat__label">Users</div>
+        </div>
+        <div className="stat">
+          <div className="stat__num">{searchesList.length}</div>
+          <div className="stat__label">Searches</div>
+        </div>
+        <div className="stat">
+          <div className="stat__num">{nListings}</div>
+          <div className="stat__label">Listings</div>
+        </div>
+        <div className="stat stat--good">
+          <div className="stat__num">{wantN}</div>
+          <div className="stat__label">Wanted</div>
+        </div>
+        <div className="stat">
+          <div className="stat__num">{skipN}</div>
+          <div className="stat__label">Skipped</div>
+        </div>
+        <div className="stat">
+          <div className="stat__num">{baseN}</div>
+          <div className="stat__label">Baselined</div>
+        </div>
+      </div>
 
       <h2>Searches</h2>
+      <div className="table-wrap">
       <table>
         <tbody>
           <tr>
@@ -116,8 +140,10 @@ export default async function Admin() {
           })}
         </tbody>
       </table>
+      </div>
 
       <h2>Users &amp; notifications</h2>
+      <div className="table-wrap">
       <table>
         <tbody>
           <tr>
@@ -136,8 +162,10 @@ export default async function Admin() {
           ))}
         </tbody>
       </table>
+      </div>
 
       <h2>Recent classifications</h2>
+      <div className="table-wrap">
       <table>
         <tbody>
           <tr>
@@ -170,6 +198,7 @@ export default async function Admin() {
           })}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

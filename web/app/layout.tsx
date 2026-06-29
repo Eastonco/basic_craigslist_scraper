@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "Free Stuff Finder" };
+export const metadata: Metadata = { title: "free stuff finder" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

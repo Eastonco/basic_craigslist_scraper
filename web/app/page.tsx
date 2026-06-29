@@ -6,8 +6,10 @@ const EMPTY: FormValues = { name: "", channel: "ntfy", target: "", urls: "", pro
 export default function Landing() {
   return (
     <>
-      <h1>🛋️ Free Stuff Finder</h1>
-      <p>Create a profile and get pinged only about free Craigslist items you&apos;d actually want.</p>
+      <h1>Free Stuff Finder</h1>
+      <p className="lede">
+        Create a profile and get pinged only about free Craigslist items you&apos;d actually want.
+      </p>
       <ProfileForm action={createProfile} defaults={EMPTY} submitLabel="Create my profile" showInvite />
     </>
   );
