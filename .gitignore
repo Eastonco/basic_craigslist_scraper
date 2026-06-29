@@ -9,3 +9,7 @@ configs
 __pycache__
 .DS_Store
 .env
+
+# tunnel creds/config — keep only the example
+cloudflared/*
+!cloudflared/config.example.yml

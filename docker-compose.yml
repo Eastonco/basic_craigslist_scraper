@@ -1,0 +1,79 @@
+# Runs the whole stack anywhere: `docker compose up --build`
+# Secrets (ANTHROPIC_API_KEY, INVITE_CODE, Twilio) come from .env via env_file.
+# DB/Selenium wiring is set here so it works inside the compose network.
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: craigslist
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    ports:
+      - "5432:5432"
+
+  selenium:
+    # Multi-arch (works on Apple Silicon + the Pi). If your platform can't pull
+    # it, swap to seleniarm/standalone-firefox.
+    image: selenium/standalone-firefox:latest
+    shm_size: 2gb          # browsers crash with the default tiny /dev/shm
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:4444/wd/hub/status || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  web:
+    build: .
+    command: uvicorn server:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: craigslist
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  scraper:
+    build: .
+    command: python main.py
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: craigslist
+      SELENIUM_REMOTE_URL: http://selenium:4444
+    depends_on:
+      db:
+        condition: service_healthy
+      selenium:
+        condition: service_healthy
+
+  # Optional public tunnel. OFF by default — only starts with:
+  #   docker compose --profile tunnel up
+  # Drop your tunnel creds + config in ./cloudflared/ (see cloudflared/config.example.yml).
+  # Anyone running a copy can ignore this entirely and use localhost:8000.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro
+    depends_on:
+      - web
+
+volumes:
+  pgdata:

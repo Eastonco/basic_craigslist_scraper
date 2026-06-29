@@ -1,0 +1,20 @@
+# OPTIONAL public tunnel config. Copy to cloudflared/config.yml and drop your
+# tunnel credentials json beside it. Only used when you run:
+#   docker compose --profile tunnel up
+#
+# One-time setup (needs the cloudflared CLI authed once via `cloudflared tunnel login`):
+#   cloudflared tunnel create <name>                       # writes ~/.cloudflared/<UUID>.json
+#   cloudflared tunnel route dns <name> sub.yourdomain.com # creates the DNS record
+#   cp ~/.cloudflared/<UUID>.json ./cloudflared/           # then fill in below
+#
+# The whole ./cloudflared/ dir is gitignored except this example, so your domain
+# and credentials never get committed.
+
+tunnel: <TUNNEL_UUID>
+credentials-file: /etc/cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  # 'web' is the compose service name — reachable on the compose network.
+  - hostname: sub.yourdomain.com
+    service: http://web:8000
+  - service: http_status:404
