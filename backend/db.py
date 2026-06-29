@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from models import get_engine
+from .models import get_engine
 
 load_dotenv()
 

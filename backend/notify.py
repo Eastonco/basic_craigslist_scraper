@@ -14,7 +14,7 @@ import os
 
 import requests
 
-from prettyPrint import printError, printInfo
+from .prettyprint import printError, printInfo
 
 NTFY_SERVER = os.getenv("NTFY_SERVER", "https://ntfy.sh")
 

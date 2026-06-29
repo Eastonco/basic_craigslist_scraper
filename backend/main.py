@@ -13,11 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from sqlalchemy import func, select
 
-from classify import classify
-from db import get_engine_from_env
-from models import Listing, Search, Session, User, init_db, record_cycle
-from notify import notify
-from prettyPrint import printError, printInfo, printSuccess, welcome_message
+from .classify import classify
+from .db import get_engine_from_env
+from .models import Listing, Search, Session, User, init_db, record_cycle
+from .notify import notify
+from .prettyprint import printError, printInfo, printSuccess, welcome_message
 
 load_dotenv()
 

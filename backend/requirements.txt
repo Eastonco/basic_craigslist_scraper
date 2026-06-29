@@ -1,9 +1,6 @@
 # Direct dependencies only — pip resolves the rest. The old fully-frozen list
 # pinned 2023 transitive versions that conflict with modern anthropic.
 anthropic>=0.40
-fastapi>=0.110
-uvicorn[standard]>=0.29
-python-multipart>=0.0.9
 python-dotenv>=1.0
 SQLAlchemy>=2.0.20
 psycopg2-binary>=2.9
