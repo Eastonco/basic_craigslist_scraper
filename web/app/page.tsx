@@ -10,7 +10,7 @@ export default function Landing() {
       <p className="lede">
         Create a profile and get pinged only about free Craigslist items you&apos;d actually want.
       </p>
-      <ProfileForm action={createProfile} defaults={EMPTY} submitLabel="Create my profile" showInvite />
+      <ProfileForm action={createProfile} defaults={EMPTY} submitLabel="Create my profile" />
     </>
   );
 }

@@ -7,11 +7,10 @@ type Props = {
   action: (prev: FormState, formData: FormData) => Promise<FormState>;
   defaults: FormValues;
   submitLabel: string;
-  showInvite?: boolean;
   token?: string;
 };
 
-export default function ProfileForm({ action, defaults, submitLabel, showInvite, token }: Props) {
+export default function ProfileForm({ action, defaults, submitLabel, token }: Props) {
   const [state, formAction] = useActionState(action, null);
   const v = state?.values ?? defaults; // repopulate with last submission on error
 
@@ -26,13 +25,6 @@ export default function ProfileForm({ action, defaults, submitLabel, showInvite,
       ) : null}
 
       {token ? <input type="hidden" name="token" value={token} /> : null}
-
-      {showInvite ? (
-        <>
-          <label>Invite code</label>
-          <input name="invite" type="password" />
-        </>
-      ) : null}
 
       <label>Your name</label>
       <input name="name" defaultValue={v.name} />

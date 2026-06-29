@@ -38,12 +38,9 @@ const parseExcludes = (filters: string) =>
 const newToken = () => randomBytes(16).toString("base64url");
 
 export async function createProfile(_prev: FormState, formData: FormData): Promise<FormState> {
+  // Invite gating is handled by the /gate page + middleware (see middleware.ts),
+  // so this form is decoupled from the invite secret.
   const values = readForm(formData);
-  const invite = String(formData.get("invite") ?? "");
-  const inviteCode = process.env.INVITE_CODE ?? "";
-  if (!inviteCode || invite !== inviteCode)
-    return { errors: ["Wrong invite code."], values };
-
   const { urls, errors } = validate(values);
   if (errors.length) return { errors, values };
 
