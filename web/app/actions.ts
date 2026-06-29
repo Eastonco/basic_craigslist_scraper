@@ -15,6 +15,8 @@ export type FormValues = {
   urls: string;
   prompt: string;
   filters: string;
+  pickupPhone: string;
+  pickupNote: string;
 };
 
 export type FormState = { errors: string[]; values: FormValues } | null;
@@ -28,8 +30,13 @@ function readForm(formData: FormData): FormValues {
     urls: get("urls"),
     prompt: get("prompt"),
     filters: get("filters"),
+    pickupPhone: get("pickupPhone"),
+    pickupNote: get("pickupNote"),
   };
 }
+
+// empty string → null so the DB column stays clean
+const orNull = (s: string) => (s.trim() ? s.trim() : null);
 
 const parseExcludes = (filters: string) =>
   filters.split(",").map((w) => w.trim()).filter(Boolean);
@@ -54,6 +61,8 @@ export async function createProfile(_prev: FormState, formData: FormData): Promi
       notifyTarget: values.target.trim(),
       editToken: token,
       createdAt: now,
+      pickupPhone: orNull(values.pickupPhone),
+      pickupNote: orNull(values.pickupNote),
     })
     .returning({ id: users.id, editToken: users.editToken });
 
@@ -85,6 +94,8 @@ export async function updateProfile(_prev: FormState, formData: FormData): Promi
       name: values.name.trim(),
       notifyChannel: values.channel,
       notifyTarget: values.target.trim(),
+      pickupPhone: orNull(values.pickupPhone),
+      pickupNote: orNull(values.pickupNote),
     })
     .where(eq(users.id, user.id));
 

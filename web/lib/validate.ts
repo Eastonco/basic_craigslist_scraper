@@ -9,24 +9,45 @@ export type ProfileInput = {
   target: string;
   urls: string; // raw textarea, one per line
   prompt: string;
+  pickupPhone: string; // optional; E.164 if present
+  pickupNote: string;  // optional free-text
 };
 
-export function validate(input: ProfileInput): { urls: string[]; errors: string[] } {
-  const urls = input.urls.split(/\r?\n/).map((u) => u.trim()).filter(Boolean);
+const PICKUP_NOTE_MAX = 280;
+
+// Optional pickup contact used by the "GET" draft button. Empty is fine.
+export function validatePickup(rawPhone: string, rawNote: string): string[] {
+  const phone = rawPhone.trim();
   const errors: string[] = [];
-  const target = input.target.trim();
+  if (phone && !E164.test(phone))
+    errors.push("Pickup phone must be E.164, e.g. +14155551234 (or leave it blank).");
+  if (rawNote.trim().length > PICKUP_NOTE_MAX)
+    errors.push(`Note for sellers must be ${PICKUP_NOTE_MAX} characters or fewer.`);
+  return errors;
+}
 
-  if (!input.name.trim()) errors.push("Name is required.");
-  if (!["ntfy", "sms", "discord"].includes(input.channel))
+// Channel + target rules, shared by the public profile form and the admin notify editor.
+export function validateNotify(channel: string, rawTarget: string): string[] {
+  const target = rawTarget.trim();
+  const errors: string[] = [];
+  if (!["ntfy", "sms", "discord"].includes(channel))
     errors.push("Channel must be ntfy, sms, or discord.");
-  if (input.channel === "sms" && !E164.test(target))
+  if (channel === "sms" && !E164.test(target))
     errors.push("SMS target must be an E.164 phone, e.g. +14155551234.");
-  if (input.channel === "ntfy" && !TOPIC_OK.test(target))
+  if (channel === "ntfy" && !TOPIC_OK.test(target))
     errors.push("ntfy topic must be 3-64 chars: letters, numbers, _ or -.");
-  if (input.channel === "discord" && !target.startsWith("https://discord.com/api/webhooks/"))
+  if (channel === "discord" && !target.startsWith("https://discord.com/api/webhooks/"))
     errors.push("Discord target must be a https://discord.com/api/webhooks/... URL.");
-  if (urls.length === 0) errors.push("At least one search URL is required.");
+  return errors;
+}
 
+// URLs + wishlist prompt rules, shared by the public profile form and the admin search editor.
+// Returns the parsed url list so callers don't re-split.
+export function validateSearch(rawUrls: string, prompt: string): { urls: string[]; errors: string[] } {
+  const urls = rawUrls.split(/\r?\n/).map((u) => u.trim()).filter(Boolean);
+  const errors: string[] = [];
+
+  if (urls.length === 0) errors.push("At least one search URL is required.");
   for (const u of urls) {
     let host = "";
     try {
@@ -38,7 +59,19 @@ export function validate(input: ProfileInput): { urls: string[]; errors: string[
     if (!(u.startsWith("http") && (host === "craigslist.org" || host.endsWith(".craigslist.org"))))
       errors.push(`Not a craigslist.org URL: ${u}`);
   }
-  if (!input.prompt.trim()) errors.push("Tell us what you're looking for.");
+  if (!prompt.trim()) errors.push("Tell us what you're looking for.");
+
+  return { urls, errors };
+}
+
+export function validate(input: ProfileInput): { urls: string[]; errors: string[] } {
+  const { urls, errors: searchErrors } = validateSearch(input.urls, input.prompt);
+  const errors: string[] = [];
+
+  if (!input.name.trim()) errors.push("Name is required.");
+  errors.push(...validateNotify(input.channel, input.target));
+  errors.push(...validatePickup(input.pickupPhone, input.pickupNote));
+  errors.push(...searchErrors);
 
   return { urls, errors };
 }
