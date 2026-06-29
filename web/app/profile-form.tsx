@@ -127,7 +127,7 @@ export default function ProfileForm({ action, defaults, submitLabel, token }: Pr
       <label>
         Search URLs{" "}
         <span className="hint">
-          one per line, from the Craigslist FREE section after you set your area/radius
+          one per line, from the source site's FREE section after you set your area/radius
         </span>
       </label>
       <textarea
@@ -151,6 +151,20 @@ export default function ProfileForm({ action, defaults, submitLabel, token }: Pr
         <span className="hint">comma-separated words to hard-skip (optional)</span>
       </label>
       <input name="filters" defaultValue={v.filters} placeholder="broken, parts, gravel" />
+
+      <label>
+        Pickup phone{" "}
+        <span className="hint">
+          optional — the &quot;GET&quot; button tells sellers to text you here (E.164, e.g. +14155551234)
+        </span>
+      </label>
+      <input name="pickupPhone" defaultValue={v.pickupPhone} placeholder="+14155551234" />
+
+      <label>
+        Note for sellers{" "}
+        <span className="hint">optional — woven into the message, e.g. &quot;flexible on timing, have a truck&quot;</span>
+      </label>
+      <textarea name="pickupNote" defaultValue={v.pickupNote} placeholder="I'm flexible on timing and have a truck for big items." />
 
       <button type="submit">{submitLabel}</button>
     </form>

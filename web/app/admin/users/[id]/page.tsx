@@ -32,6 +32,14 @@ export default async function UserDetail({ params }: { params: Promise<{ id: str
             <DataList.Value>{user.notifyTarget}</DataList.Value>
           </DataList.Item>
           <DataList.Item>
+            <DataList.Label>Pickup phone</DataList.Label>
+            <DataList.Value>{user.pickupPhone || "—"}</DataList.Value>
+          </DataList.Item>
+          <DataList.Item>
+            <DataList.Label>Note for sellers</DataList.Label>
+            <DataList.Value>{user.pickupNote || "—"}</DataList.Value>
+          </DataList.Item>
+          <DataList.Item>
             <DataList.Label>Created</DataList.Label>
             <DataList.Value>{user.createdAt}</DataList.Value>
           </DataList.Item>

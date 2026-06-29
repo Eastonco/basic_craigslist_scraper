@@ -9,7 +9,22 @@ export type ProfileInput = {
   target: string;
   urls: string; // raw textarea, one per line
   prompt: string;
+  pickupPhone: string; // optional; E.164 if present
+  pickupNote: string;  // optional free-text
 };
+
+const PICKUP_NOTE_MAX = 280;
+
+// Optional pickup contact used by the "GET" draft button. Empty is fine.
+export function validatePickup(rawPhone: string, rawNote: string): string[] {
+  const phone = rawPhone.trim();
+  const errors: string[] = [];
+  if (phone && !E164.test(phone))
+    errors.push("Pickup phone must be E.164, e.g. +14155551234 (or leave it blank).");
+  if (rawNote.trim().length > PICKUP_NOTE_MAX)
+    errors.push(`Note for sellers must be ${PICKUP_NOTE_MAX} characters or fewer.`);
+  return errors;
+}
 
 // Channel + target rules, shared by the public profile form and the admin notify editor.
 export function validateNotify(channel: string, rawTarget: string): string[] {
@@ -55,6 +70,7 @@ export function validate(input: ProfileInput): { urls: string[]; errors: string[
 
   if (!input.name.trim()) errors.push("Name is required.");
   errors.push(...validateNotify(input.channel, input.target));
+  errors.push(...validatePickup(input.pickupPhone, input.pickupNote));
   errors.push(...searchErrors);
 
   return { urls, errors };

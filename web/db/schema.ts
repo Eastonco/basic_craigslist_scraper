@@ -11,6 +11,8 @@ export const users = pgTable("users", {
   notifyTarget: text("notify_target").notNull(),
   editToken: text("edit_token").notNull().unique(),  // unguessable; gates edits
   createdAt: text("created_at").notNull(),
+  pickupPhone: text("pickup_phone"),  // E.164, optional — used by the "GET" draft button
+  pickupNote: text("pickup_note"),    // free-text, woven into the AI pickup message
 });
 
 export const searches = pgTable("searches", {

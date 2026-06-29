@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge, Card, Flex, Grid, Heading, Link as RLink, Table, Text } from "@radix-ui/themes";
 
 import { HeartbeatBadge } from "./auto-refresh";
+import GetButton from "./listings/get-button";
 import { getOverview, getStatus, recentListings } from "./queries";
 
 export const dynamic = "force-dynamic"; // always read live data, never prerender
@@ -58,6 +59,7 @@ export default async function Overview() {
                 <Table.ColumnHeaderCell>Verdict</Table.ColumnHeaderCell>
                 <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
                 <Table.ColumnHeaderCell>Reason</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -84,6 +86,9 @@ export default async function Overview() {
                     <Text size="1" color="gray">
                       {l.aiReason || ""}
                     </Text>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <GetButton listingId={l.id} link={l.link} size="1" />
                   </Table.Cell>
                 </Table.Row>
               ))}

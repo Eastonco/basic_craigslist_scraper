@@ -6,7 +6,8 @@
     "dev": "next dev -p 8000",
     "build": "next build",
     "start": "next start -p 8000",
-    "db:pull": "drizzle-kit pull"
+    "db:pull": "drizzle-kit pull",
+    "test": "npx --yes tsx app/admin/listings/draft.test.ts"
   },
   "dependencies": {
     "@radix-ui/themes": "^3.3.0",

@@ -27,6 +27,8 @@ export default async function EditProfile({
     urls: search ? search.urls.join("\n") : "",
     prompt: search?.preferencePrompt ?? "",
     filters: search ? search.excludeFilters.join(", ") : "",
+    pickupPhone: user.pickupPhone ?? "",
+    pickupNote: user.pickupNote ?? "",
   };
 
   return (

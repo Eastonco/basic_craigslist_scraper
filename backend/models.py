@@ -39,6 +39,9 @@ class User(Base):
     # unguessable token; the only thing gating profile edits
     edit_token: Mapped[str] = mapped_column(String, default_factory=_new_token, unique=True)
     created_at: Mapped[str] = mapped_column(String, default_factory=_now)
+    # used by the web "GET" button to draft a pickup message to a seller
+    pickup_phone: Mapped[Optional[str]] = mapped_column(String, default=None)  # E.164, optional
+    pickup_note: Mapped[Optional[str]] = mapped_column(String, default=None)   # free-text, woven into the AI message
 
 
 class Search(Base):

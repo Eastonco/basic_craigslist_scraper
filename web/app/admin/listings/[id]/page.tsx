@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Badge, Card, DataList, Flex, Heading, Link as RLink, Text } from "@radix-ui/themes";
 
 import { getListing } from "../../queries";
+import GetButton from "../get-button";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,10 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
 
   return (
     <Flex direction="column" gap="5">
-      <Heading size="6">{listing.title}</Heading>
+      <Flex justify="between" align="center" gap="4" wrap="wrap">
+        <Heading size="6">{listing.title}</Heading>
+        <GetButton listingId={listing.id} link={listing.link} />
+      </Flex>
 
       <Flex gap="5" wrap="wrap" align="start">
         {listing.imageUrl && (
@@ -84,7 +88,7 @@ export default async function ListingDetail({ params }: { params: Promise<{ id: 
               <DataList.Label>Link</DataList.Label>
               <DataList.Value>
                 <RLink href={listing.link} target="_blank" rel="noreferrer">
-                  Open on Craigslist
+                  Open listing
                 </RLink>
               </DataList.Value>
             </DataList.Item>

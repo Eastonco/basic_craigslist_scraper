@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge, Card, Flex, Heading, Link as RLink, Table, Text } from "@radix-ui/themes";
 
 import { listListingRows } from "../queries";
+import GetButton from "./get-button";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function ListingsPage() {
               <Table.ColumnHeaderCell>Verdict</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Reason</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -49,6 +51,9 @@ export default async function ListingsPage() {
                   <Text size="1" color="gray">
                     {l.aiReason || ""}
                   </Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <GetButton listingId={l.id} link={l.link} size="1" />
                 </Table.Cell>
               </Table.Row>
             ))}

@@ -17,11 +17,15 @@ export function UserForm({
   name,
   channel,
   target,
+  pickupPhone,
+  pickupNote,
 }: {
   userId: number;
   name: string;
   channel: string;
   target: string;
+  pickupPhone: string;
+  pickupNote: string;
 }) {
   const [state, action, pending] = useActionState<SaveState, FormData>(updateUser, null);
   const [ch, setCh] = useState(channel);
@@ -60,6 +64,30 @@ export function UserForm({
           <TextField.Root name="target" defaultValue={target} placeholder="notification target" />
           <Text as="div" size="1" color="gray" mt="1">
             {HINT[ch] ?? ""}
+          </Text>
+        </label>
+
+        <label>
+          <Text as="div" size="2" weight="bold" mb="1">
+            Pickup phone
+          </Text>
+          <TextField.Root name="pickupPhone" defaultValue={pickupPhone} placeholder="+14155551234" />
+          <Text as="div" size="1" color="gray" mt="1">
+            optional — the &quot;GET&quot; button tells sellers to text this number (E.164)
+          </Text>
+        </label>
+
+        <label>
+          <Text as="div" size="2" weight="bold" mb="1">
+            Note for sellers
+          </Text>
+          <TextField.Root
+            name="pickupNote"
+            defaultValue={pickupNote}
+            placeholder="flexible on timing, have a truck"
+          />
+          <Text as="div" size="1" color="gray" mt="1">
+            optional — woven into the AI pickup message
           </Text>
         </label>
 

@@ -21,6 +21,8 @@ export default async function EditUser({ params }: { params: Promise<{ id: strin
           name={user.name}
           channel={user.notifyChannel}
           target={user.notifyTarget}
+          pickupPhone={user.pickupPhone ?? ""}
+          pickupNote={user.pickupNote ?? ""}
         />
       </Card>
     </Flex>

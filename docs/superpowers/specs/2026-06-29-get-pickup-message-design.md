@@ -11,9 +11,9 @@ identical copy to many sellers is what looks like spam / a bot.
 ## Decisions (locked)
 
 - **Delivery: draft-only.** Button produces text + a **Copy** action and opens
-  the Craigslist listing. The user pastes into CL's own reply form and sends.
+  the listing. The user pastes into the listing's own reply form and sends.
   No server-side email send, no scraping the seller's relay address, no
-  Craigslist-ToS automation risk.
+  ToS automation risk.
 - **Config: per-user**, edited in the existing public profile form.
 - **Button location: both** the listing detail page (`/admin/listings/[id]`) and
   each row of the listings list (`/admin/listings`).

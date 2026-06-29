@@ -42,7 +42,7 @@ def browser_setup():
 
 
 def _first_image(el):
-    # ponytail: Craigslist gallery cards lazy-load images; src is usually set
+    # ponytail: gallery cards lazy-load images; src is usually set
     # once the card is in view. If thumbnails come back empty, this is where to
     # scroll the card into view or read a data-* attribute instead.
     try:

@@ -6,7 +6,10 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/db";
 import { searches, users } from "@/db/schema";
-import { validateNotify, validateSearch } from "@/lib/validate";
+import { validateNotify, validatePickup, validateSearch } from "@/lib/validate";
+
+// empty string → null so the DB column stays clean
+const orNull = (s: string) => (s.trim() ? s.trim() : null);
 
 // Admin-only: every /admin/* POST goes through middleware's Basic Auth gate (see middleware.ts).
 // On success the action redirects back to the entity's view page; on error it returns the
@@ -18,16 +21,25 @@ export async function updateUser(_prev: SaveState, formData: FormData): Promise<
   const name = String(formData.get("name") ?? "");
   const channel = String(formData.get("channel") ?? "");
   const target = String(formData.get("target") ?? "");
+  const pickupPhone = String(formData.get("pickupPhone") ?? "");
+  const pickupNote = String(formData.get("pickupNote") ?? "");
 
   if (!Number.isInteger(id) || id <= 0) return { errors: ["Bad user id."] };
   const errors: string[] = [];
   if (!name.trim()) errors.push("Name is required.");
   errors.push(...validateNotify(channel, target));
+  errors.push(...validatePickup(pickupPhone, pickupNote));
   if (errors.length) return { errors };
 
   await db
     .update(users)
-    .set({ name: name.trim(), notifyChannel: channel, notifyTarget: target.trim() })
+    .set({
+      name: name.trim(),
+      notifyChannel: channel,
+      notifyTarget: target.trim(),
+      pickupPhone: orNull(pickupPhone),
+      pickupNote: orNull(pickupNote),
+    })
     .where(eq(users.id, id));
 
   revalidatePath(`/admin/users/${id}`);
